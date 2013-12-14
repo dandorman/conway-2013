@@ -8,11 +8,14 @@ class LivingCell
   end
 
   def next
-    DeadCell.new
+    board.neighbors > 1 ? LivingCell.new(board) : DeadCell.new(board)
   end
 end
 
 class DeadCell
+  def initialize(board)
+    @board = board
+  end
 end
 
 describe LivingCell do
@@ -22,6 +25,7 @@ describe LivingCell do
     context "with 0 neighbors" do
       it "returns a dead cell" do
         cell = LivingCell.new(board)
+        board.stub(neighbors: 0)
         expect(cell.next).to be_a DeadCell
       end
     end
@@ -29,7 +33,8 @@ describe LivingCell do
     context "with 1 neighbors" do
       it "returns a dead cell" do
         cell = LivingCell.new(board)
-        expect(cell.next).to be_a DeadCell
+        board.stub(neighbors: 2)
+        expect(cell.next).to be_a LivingCell
       end
     end
   end
