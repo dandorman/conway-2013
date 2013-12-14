@@ -30,8 +30,8 @@ describe LivingCell do
       end
     end
 
-    context "with 1 neighbors" do
-      it "returns a dead cell" do
+    context "with 2 neighbors" do
+      it "returns a living cell" do
         cell = LivingCell.new(board)
         board.stub(neighbors: 2)
         expect(cell.next).to be_a LivingCell
