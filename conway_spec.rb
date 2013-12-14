@@ -1,14 +1,21 @@
 require "rspec"
 
-class Cell
-  def alive?
-    true
+class LivingCell
+  def next
+    DeadCell.new
   end
 end
 
-describe Cell do
-  it "can be alive" do
-    cell = Cell.new
-    expect(cell).to be_alive
+class DeadCell
+end
+
+describe LivingCell do
+  describe "#next" do
+    context "with 0 neighbors" do
+      it "returns a dead cell" do
+        cell = LivingCell.new
+        expect(cell.next).to be_a DeadCell
+      end
+    end
   end
 end
