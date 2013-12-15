@@ -1,7 +1,8 @@
 require "rspec"
+require_relative "./conway_spec"
 
 class Board
-  def initialize(cells)
+  def initialize(cells = {})
     @cells = cells
   end
 
@@ -9,7 +10,11 @@ class Board
     @cells[[x, y]]
   end
 
-  def neighbors(cell)
+  def seed(coordinates)
+      coordinates.each {|coordinate| @cells[coordinate] = LivingCell.new(self)}
+  end
+
+  def living_neighbors(cell)
     (x, y), _ = @cells.rassoc(cell)
     count = 0
     ((x - 1)..(x + 1)).each do |_x|
@@ -29,6 +34,11 @@ class Board
     end
     Board.new(new_cells)
   end
+
+  def population
+    (@cells.select {|p,c| c && c.alive?}).size
+  end
+
 end
 
 describe Board do
@@ -37,18 +47,30 @@ describe Board do
     expect(board.cell(0, 0)).to eq :cell
   end
 
-  describe "#neighbors" do
+  it "is capable of granting life to an unintiated cell" do
+      board = Board.new
+      board.seed([[0,0]])
+      expect(board.cell(0,0).alive?).to be_true
+  end
+
+  it "should know the total population" do
+      board = Board.new
+      board.seed([[0,0]])
+      expect(board.population).to be_equal 1
+  end
+
+  describe "#living_neighbors" do
     it "returns neighbor count" do
       cell = double(:cell, alive?: true)
       board = Board.new({[0,0] => cell})
-      expect(board.neighbors(cell)).to be_zero
+      expect(board.living_neighbors(cell)).to be_zero
     end
 
     it "returns neighbor count" do
       cell = double(:cell, alive?: true)
       another_cell = double(:another_cell, alive?: true)
       board = Board.new({[0,0] => cell, [0, 1] => cell})
-      expect(board.neighbors(cell)).to eq 1
+      expect(board.living_neighbors(cell)).to eq 1
     end
   end
 
