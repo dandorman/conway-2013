@@ -8,7 +8,7 @@ class LivingCell
   end
 
   def next
-    (2..3).include?(board.neighbors(self)) ? LivingCell.new(board) : DeadCell.new(board)
+    (2..3).include?(board.living_neighbors(self)) ? LivingCell.new(board) : DeadCell.new(board)
   end
 
   def alive?
@@ -24,7 +24,7 @@ class DeadCell
   end
 
   def next
-    board.neighbors(self) == 3 ? LivingCell.new(board) : DeadCell.new(board)
+    board.living_neighbors(self) == 3 ? LivingCell.new(board) : DeadCell.new(board)
   end
 
   def alive?
@@ -42,43 +42,43 @@ describe LivingCell do
   end
 
   describe "#next" do
-    context "with 0 neighbors" do
+    context "with 0 living_neighbors" do
       it "returns a dead cell" do
         cell = LivingCell.new(board)
-        board.stub(neighbors: 0)
+        board.stub(living_neighbors: 0)
         expect(cell.next).to be_a DeadCell
       end
     end
 
-    context "with 1 neighbors" do
+    context "with 1 living_neighbors" do
       it "returns a dead cell" do
         cell = LivingCell.new(board)
-        board.stub(neighbors: 1)
+        board.stub(living_neighbors: 1)
         expect(cell.next).to be_a DeadCell
       end
     end
 
-    context "with 2 neighbors" do
+    context "with 2 living_neighbors" do
       it "returns a living cell" do
         cell = LivingCell.new(board)
-        board.stub(neighbors: 2)
+        board.stub(living_neighbors: 2)
         expect(cell.next).to be_a LivingCell
       end
     end
 
-    context "with 3 neighbors" do
+    context "with 3 living_neighbors" do
       it "returns a living cell" do
         cell = LivingCell.new(board)
-        board.stub(neighbors: 3)
+        board.stub(living_neighbors: 3)
         expect(cell.next).to be_a LivingCell
       end
     end
 
     (4..8).each do |n|
-      context "with #{n} neighbors" do
+      context "with #{n} living_neighbors" do
         it "returns a living cell" do
           cell = LivingCell.new(board)
-          board.stub(neighbors: n)
+          board.stub(living_neighbors: n)
           expect(cell.next).to be_a DeadCell
         end
       end
@@ -96,35 +96,35 @@ describe DeadCell do
   end
 
   describe "#next" do
-    context "with 0 neighbors" do
+    context "with 0 living_neighbors" do
       it "returns a dead cell" do
         cell = DeadCell.new(board)
-        board.stub(neighbors: 0)
+        board.stub(living_neighbors: 0)
         expect(cell.next).to be_a DeadCell
       end
     end
 
-    context "with 1 neighbors" do
+    context "with 1 living_neighbors" do
       it "returns a dead cell" do
         cell = DeadCell.new(board)
-        board.stub(neighbors: 0)
+        board.stub(living_neighbors: 0)
         expect(cell.next).to be_a DeadCell
       end
     end
 
-    context "with 3 neighbors" do
+    context "with 3 living_neighbors" do
       it "returns a living cell" do
         cell = DeadCell.new(board)
-        board.stub(neighbors: 3)
+        board.stub(living_neighbors: 3)
         expect(cell.next).to be_a LivingCell
       end
     end
 
     [4..8].each do |n|
-      context "with #{n} neighbors" do
+      context "with #{n} living_neighbors" do
         it "returns a living cell" do
           cell = DeadCell.new(board)
-          board.stub(neighbors: n)
+          board.stub(living_neighbors: n)
           expect(cell.next).to be_a DeadCell
         end
       end
